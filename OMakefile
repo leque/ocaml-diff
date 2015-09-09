@@ -1,0 +1,43 @@
+USE_OCAMLFIND = true
+
+OCAMLPACKS[] =
+    qcheck
+    ppx_test
+
+if $(not $(OCAMLFIND_EXISTS))
+   eprintln(This project requires ocamlfind, but is was not found.)
+   eprintln(You need to install ocamlfind and run "omake --configure".)
+   exit 1
+
+OCAMLINCLUDES +=
+
+OCAMLFLAGS    += -g -w +A -annot
+OCAMLCFLAGS   +=
+OCAMLOPTFLAGS +=
+OCAML_LINK_FLAGS +=
+OCAML_BYTE_LINK_FLAGS +=
+OCAML_NATIVE_LINK_FLAGS +=
+
+FILES[] =
+    diff
+    test
+
+PROGRAM = test
+OCAML_LIBS +=
+OCAML_CLIBS +=
+OCAML_OTHER_LIBS +=
+OCAML_LIB_FLAGS +=
+
+.PHONY: check doc clean
+
+check: $(PROGRAM)
+    ./$(PROGRAM)
+
+doc: $(PROGRAM)
+    mkdir -p html
+    ocamlfind ocamldoc -html -d html diff.mli
+
+clean:
+    rm -fr html *.o *.cm* *.opt *.run $(PROGRAM)
+
+.DEFAULT: $(OCamlProgram $(PROGRAM), $(FILES))
